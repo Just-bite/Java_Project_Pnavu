@@ -2,17 +2,16 @@ package com.example.restservice.service;
 
 import com.example.restservice.model.Song;
 import com.example.restservice.repository.SongRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class SongService {
     private final List<Song> songList;
 
     public SongService(SongRepository songRepository) {
-        this.songList=songRepository.getAllSongs();
+        this.songList = songRepository.getAllSongs();
     }
 
     public Optional<Song> getSong(Integer id) {
@@ -35,8 +34,8 @@ public class SongService {
 
     public List<Song> searchSongsByAuthorAndName(String author, String name) {
         return songList.stream()
-                .filter(song -> song.getAuthorName().equalsIgnoreCase(author) &&
-                        song.getSongName().equalsIgnoreCase(name))
+                .filter(song -> song.getAuthorName().equalsIgnoreCase(author)
+                        && song.getSongName().equalsIgnoreCase(name))
                 .toList();
     }
 }

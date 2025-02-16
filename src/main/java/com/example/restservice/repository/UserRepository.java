@@ -1,12 +1,11 @@
 package com.example.restservice.repository;
 
 import com.example.restservice.model.User;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository {
@@ -31,7 +30,7 @@ public class UserRepository {
 
     public Optional<User> getUserById(Integer id) {
         return userList.stream()
-                .filter(user -> user.getId()==id)
+                .filter(user -> user.getId() == id)
                 .findFirst();
     }
 }

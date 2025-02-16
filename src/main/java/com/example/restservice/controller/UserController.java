@@ -2,10 +2,9 @@ package com.example.restservice.controller;
 
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")

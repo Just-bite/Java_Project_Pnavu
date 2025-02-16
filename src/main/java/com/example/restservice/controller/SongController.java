@@ -2,11 +2,10 @@ package com.example.restservice.controller;
 
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/songs")

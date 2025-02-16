@@ -1,11 +1,10 @@
 package com.example.restservice.repository;
 
 import com.example.restservice.model.Song;
-import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class SongRepository {
@@ -27,5 +26,4 @@ public class SongRepository {
     public List<Song> getAllSongs() {
         return songList;
     }
-
 }
