@@ -8,6 +8,7 @@ class RestServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//tests here
 	}
 
 }
