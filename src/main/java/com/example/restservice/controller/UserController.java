@@ -22,6 +22,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    /**Returns unique user based on their unique id.*/
     @GetMapping("/{id}")
     public User getUser(@PathVariable Integer id) {
         return userService.getUser(id).orElse(null);

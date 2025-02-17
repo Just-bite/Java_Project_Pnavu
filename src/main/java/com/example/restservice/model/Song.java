@@ -1,5 +1,7 @@
 package com.example.restservice.model;
 
+/**Class song that contains fields that allow to sort or display information about songs.
+ * Will be connected to User class which will allow to gain new songs based on users preferences*/
 public class Song {
     private int id;
     private String authorName;
