@@ -18,26 +18,22 @@ public class SongController {
         this.songService = songService;
     }
 
-    /**Returns song that has specific id. ID is unique for each song.*/
     @GetMapping("/{id}")
     public Song getSongById(@PathVariable Integer id) {
         Optional<Song> song = songService.getSong(id);
         return song.orElse(null);
     }
 
-    /**Returns songs info such as id and name based on author. The author is not unique.*/
     @GetMapping("/info-by-author")
     public List<Song> getSongsInfoByAuthor(@RequestParam String author) {
         return songService.getSongsByAuthor(author);
     }
 
-    /**Returns songs info such as id and author based on songs name. The songs name is not unique.*/
     @GetMapping("/info-by-song-name")
     public List<Song> getSongsInfoByName(@RequestParam String name) {
         return songService.getSongsByName(name);
     }
 
-    /**Returns list of song entities based on both author and songs name.*/
     @GetMapping("/info-by-author-and-song-name")
     public List<Song> searchSongsByAuthorAndName(@RequestParam String author,
                                                  @RequestParam String name) {
