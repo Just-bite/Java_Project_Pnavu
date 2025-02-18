@@ -22,7 +22,4 @@ This project is a RESTful API similar to Spotify. The API allows managing users,
 
 ## 🛠 Development & Testing
 
-✉️ If you have any questions, contact [here](konstantinfedenkov@gmail.com)!
-
-
-
+✉️ If you have any questions, contact [here](mailto:konstantinfedenkov@gmail.com)!
