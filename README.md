@@ -12,7 +12,7 @@ This project is a RESTful API similar to Spotify. The API allows managing users,
 
 ## 🛠️ Technologies (In progress)
 - **Java 17**
-- **Spring Boot 3**
+- **Spring Boot 3.4.2**
 
 ## 📥 Installation
 
