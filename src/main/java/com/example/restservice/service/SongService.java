@@ -20,7 +20,7 @@ public class SongService {
 
     public Song getSongById(Long id) {
         return songRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Song not found"));
+                -> new RuntimeException("Song not found("));
     }
 
     public List<Song> createSongs(List<Song> songs) {
