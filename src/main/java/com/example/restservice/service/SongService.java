@@ -1,7 +1,9 @@
-package com.spotify.restservice.service;
+package com.example.restservice.service;
 
-import com.spotify.restservice.model.Song;
-import com.spotify.restservice.repository.SongRepository;
+import com.example.restservice.model.Playlist;
+import com.example.restservice.model.Song;
+import com.example.restservice.repository.PlaylistRepository;
+import com.example.restservice.repository.SongRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SongService {
     private final SongRepository songRepository;
+    private final PlaylistRepository playlistRepository;
 
     public List<Song> getAllSongs() {
         return songRepository.findAll();
@@ -17,11 +20,11 @@ public class SongService {
 
     public Song getSongById(Long id) {
         return songRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Песня не найдена"));
+                -> new RuntimeException("Song not found"));
     }
 
-    public Song createSong(Song song) {
-        return songRepository.save(song);
+    public List<Song> createSongs(List<Song> songs) {
+        return songRepository.saveAll(songs);
     }
 
     public Song updateSong(Long id, Song song) {
@@ -32,6 +35,12 @@ public class SongService {
     }
 
     public void deleteSong(Long id) {
-        songRepository.deleteById(id);
+        Song song = getSongById(id);
+        for (Playlist playlist : song.getPlaylists()) {
+            playlist.getSongs().remove(song);
+            playlistRepository.save(playlist);
+        }
+        songRepository.delete(song);
     }
 }
+

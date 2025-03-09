@@ -1,7 +1,7 @@
-package com.spotify.restservice.controller;
+package com.example.restservice.controller;
 
-import com.spotify.restservice.model.Song;
-import com.spotify.restservice.service.SongService;
+import com.example.restservice.model.Song;
+import com.example.restservice.service.SongService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 
 
 @RestController
@@ -32,8 +31,8 @@ public class SongController {
     }
 
     @PostMapping
-    public Song createSong(@RequestBody Song song) {
-        return songService.createSong(song);
+    public List<Song> createSongs(@RequestBody List<Song> songs) {
+        return songService.createSongs(songs);
     }
 
     @PutMapping("/{id}")
