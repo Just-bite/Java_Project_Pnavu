@@ -63,12 +63,11 @@ public class SongService {
     }
 
     public List<Song> getSongsByArtist(String artist) {
+        artist = artist.replaceAll("[\n\r]", "_");
         if (songsCache.containsKey(artist)) {
-            artist = artist.replaceAll("[\n\r]", "_");
             logger.log(Level.INFO, "[CACHE] Retrieved songs for artist: {0}", artist);
             return songsCache.get(artist);
         }
-
         logger.log(Level.INFO, "[DB] Querying database for artist: {0}", artist);
         List<Song> songs = songRepository.findByArtist(artist);
         songsCache.put(artist, songs);
