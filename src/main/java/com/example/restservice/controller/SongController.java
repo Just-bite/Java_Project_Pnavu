@@ -4,14 +4,7 @@ import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -44,4 +37,10 @@ public class SongController {
     public void deleteSong(@PathVariable Long id) {
         songService.deleteSong(id);
     }
+
+    @GetMapping("/by-artist")
+    public List<Song> getSongsByArtist(@RequestParam String artist) {
+        return songService.getSongsByArtist(artist);
+    }
+
 }
