@@ -42,7 +42,8 @@ public class SongService {
 
 
         songsCache.remove(existingSong.getArtist());
-        logger.log(Level.INFO,"[CACHE] Removed outdated cache for artist: {0}", existingSong.getArtist());
+        logger.log(Level.INFO, "[CACHE] Removed outdated cache for artist: {0}",
+                                                            existingSong.getArtist());
 
         return updatedSong;
     }
@@ -58,19 +59,20 @@ public class SongService {
         songRepository.delete(song);
 
         songsCache.remove(artist);
-        logger.log(Level.INFO,"[CACHE] Removed songs cache for artist: {0}", artist);
+        logger.log(Level.INFO, "[CACHE] Removed songs cache for artist: {0}", artist);
     }
 
     public List<Song> getSongsByArtist(String artist) {
         if (songsCache.containsKey(artist)) {
+            artist = artist.replaceAll("[\n\r]", "_");
             logger.log(Level.INFO, "[CACHE] Retrieved songs for artist: {0}", artist);
             return songsCache.get(artist);
         }
 
-        logger.log(Level.INFO,"[DB] Querying database for artist: {0}", artist);
+        logger.log(Level.INFO, "[DB] Querying database for artist: {0}", artist);
         List<Song> songs = songRepository.findByArtist(artist);
         songsCache.put(artist, songs);
-        logger.log(Level.INFO,"[CACHE] Added songs to cache for artist: {0}", artist);
+        logger.log(Level.INFO, "[CACHE] Added songs to cache for artist: {0}", artist);
         return songs;
     }
 }

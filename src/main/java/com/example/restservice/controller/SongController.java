@@ -3,8 +3,18 @@ package com.example.restservice.controller;
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -39,8 +49,16 @@ public class SongController {
     }
 
     @GetMapping("/by-artist")
-    public List<Song> getSongsByArtist(@RequestParam String artist) {
-        return songService.getSongsByArtist(artist);
+    public List<SongDTO> getSongsByArtist(
+            @RequestParam @Size(max = 100) String artist,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        if (artist == null || artist.trim().isEmpty()) {
+            throw new IllegalArgumentException("Artist parameter cannot be null or empty");
+        }
+        return songService.getSongsByArtist(artist, page, size).stream()
+                .map(song -> new SongDTO(song.getTitle(), song.getArtist()))
+                .collect(Collectors.toList());
     }
 
 }
