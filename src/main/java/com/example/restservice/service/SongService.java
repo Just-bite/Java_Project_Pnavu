@@ -18,7 +18,7 @@ public class SongService {
     private final SongRepository songRepository;
     private final PlaylistRepository playlistRepository;
     private final LinkedHashMap<String, List<Song>> songsCache;
- 
+
     public List<Song> getAllSongs() {
         return songRepository.findAll();
     }
