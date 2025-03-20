@@ -48,6 +48,11 @@ public class SongController {
 
     @GetMapping("/by-artist")
     public List<Song> getSongsByArtist(@RequestParam String artist) {
+        // Валидация входных данных на уровне контроллера
+        if (artist == null || artist.isEmpty()) {
+            throw new IllegalArgumentException("Artist name cannot be null or empty");
+        }
+
         return songService.getSongsByArtist(artist);
     }
 
