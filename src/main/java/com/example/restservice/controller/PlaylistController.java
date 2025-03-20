@@ -44,5 +44,10 @@ public class PlaylistController {
     public void deletePlaylist(@PathVariable Long id) {
         playlistService.deletePlaylist(id);
     }
+
+    @GetMapping("/with-songs")
+    public List<Playlist> getPlaylistsWithSongs() {
+        return playlistService.getPlaylistsWithSongs();
+    }
 }
 

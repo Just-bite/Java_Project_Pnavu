@@ -22,7 +22,7 @@ public class CacheConfig {
             public List<Song> put(String key, List<Song> value) {
                 usageCounter.put(key, usageCounter.getOrDefault(key, 0) + 1);
                 if (size() > MAX_CACHE_SIZE) {
-                    removeLFUEntry();
+                    removelfuEntry();
                 }
                 return super.put(key, value);
             }
@@ -41,7 +41,7 @@ public class CacheConfig {
                 return super.remove(key);
             }
 
-            private void removeLFUEntry() {
+            private void removelfuEntry() {
                 String leastUsedKey = usageCounter.entrySet().stream()
                         .min(Map.Entry.comparingByValue())
                         .map(Map.Entry::getKey)

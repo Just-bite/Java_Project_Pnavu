@@ -49,6 +49,11 @@ public class PlaylistService {
         playlist.getSongs().clear();
         playlistRepository.delete(playlist);
     }
+
+    public List<Playlist> getPlaylistsWithSongs() {
+        return playlistRepository.findPlaylistsWithSongs();
+    }
+
 }
 
 
