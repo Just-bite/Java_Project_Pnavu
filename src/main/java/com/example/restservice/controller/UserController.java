@@ -37,7 +37,8 @@ public class UserController {
     @Operation(
             summary = "Создает пользователей"
     )
-    public List<User> createUsers(@RequestBody List<User> users) {
+    public List<User> createUsers(@RequestBody @Parameter(description = "List<Users>",
+            example = "[{ username: name }]") List<User> users) {
         return userService.createUsers(users);
     }
 
@@ -46,8 +47,7 @@ public class UserController {
             summary = "Удаляет пользователя",
             description = "Удаляет пользователя по его id"
     )
-    public void deleteUser(@PathVariable @Parameter(description = "id",
-            example = "1") Long id) {
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
 }
