@@ -2,6 +2,7 @@ package com.example.restservice.controller;
 
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Tag(name = "Контроллер пользователей", description
+          = "Позволяет получать, создавать и удалять пользователей")
 public class UserController {
     private final UserService userService;
 

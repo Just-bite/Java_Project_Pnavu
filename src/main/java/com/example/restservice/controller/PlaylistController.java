@@ -2,6 +2,7 @@ package com.example.restservice.controller;
 
 import com.example.restservice.model.Playlist;
 import com.example.restservice.service.PlaylistService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/playlists")
 @RequiredArgsConstructor
+@Tag(name = "Контроллер плейлистов", description =
+            "Позволяет получать, создавать и удалять плейлисты,"
+          + "а также наполнять их песнями и изменять их содержимое")
 public class PlaylistController {
     private final PlaylistService playlistService;
 
