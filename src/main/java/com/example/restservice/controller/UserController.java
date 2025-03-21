@@ -3,6 +3,7 @@ package com.example.restservice.controller;
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,8 @@ public class UserController {
             summary = "Удаляет пользователя",
             description = "Удаляет пользователя по его id"
     )
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@PathVariable @Parameter(description = "id",
+            example = "1") Long id) {
         userService.deleteUser(id);
     }
 }
