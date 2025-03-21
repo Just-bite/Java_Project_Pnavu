@@ -1,5 +1,6 @@
 package com.example.restservice.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,16 +23,22 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Schema(description = "Сущность пользователя")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Ункальный идентификатор песни",
+            example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Schema(description = "Имя пользователя",
+            example = "User_nickname", accessMode = Schema.AccessMode.READ_ONLY)
     private String username;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Schema(description = "Название плейлистов принадлежащих пользователю",
+            example = "My playlist", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Playlist> playlists;
 
 }

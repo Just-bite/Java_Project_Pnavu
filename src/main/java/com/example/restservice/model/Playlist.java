@@ -25,6 +25,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Сущность плейлиста")
 public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
