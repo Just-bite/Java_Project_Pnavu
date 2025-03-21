@@ -1,57 +1,36 @@
 package com.example.restservice.service;
 
-import com.example.restservice.model.Song;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
-@Configuration
-public class CacheConfig {
+@Component
+public class CacheConfig<K, V> extends LinkedHashMap<K, V> {
+    private static final int MAXSIZE = 3;
 
-    private static final int MAX_CACHE_SIZE = 10;
+    public CacheConfig() {
+        super(MAXSIZE + 1, 1.f, true);
+    }
 
-    @Bean
-    public Map<String, List<Song>> songsCache() {
-        return new LinkedHashMap<String, List<Song>>() {
-            private final Map<String, Integer> usageCounter = new HashMap<>();
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+        return size() > MAXSIZE;
+    }
 
-            @Override
-            public List<Song> put(String key, List<Song> value) {
-                usageCounter.put(key, usageCounter.getOrDefault(key, 0) + 1);
-                if (size() > MAX_CACHE_SIZE) {
-                    removelfuEntry();
-                }
-                return super.put(key, value);
-            }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-            @Override
-            public List<Song> get(Object key) {
-                if (containsKey(key)) {
-                    usageCounter.put((String) key, usageCounter.getOrDefault(key, 0) + 1);
-                }
-                return super.get(key);
-            }
+        return super.equals(o);
+    }
 
-            @Override
-            public List<Song> remove(Object key) {
-                usageCounter.remove(key);
-                return super.remove(key);
-            }
-
-            private void removelfuEntry() {
-                String leastUsedKey = usageCounter.entrySet().stream()
-                        .min(Map.Entry.comparingByValue())
-                        .map(Map.Entry::getKey)
-                        .orElse(null);
-
-                if (leastUsedKey != null) {
-                    usageCounter.remove(leastUsedKey);
-                    remove(leastUsedKey);
-                }
-            }
-        };
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

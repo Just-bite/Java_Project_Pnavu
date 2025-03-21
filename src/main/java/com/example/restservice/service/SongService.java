@@ -62,50 +62,31 @@ public class SongService {
         logger.log(Level.INFO, "[CACHE] Removed songs cache for artist: {0}", artist);
     }
 
-   /* public List<Song> getSongsByArtist(String artist) {
+    public List<Song> getSongsByArtist(String artist) {
+        if (artist == null || artist.isEmpty()) {
+            throw new IllegalArgumentException("Artist name cannot be null or empty");
+        }
+
+        if (artist.length() > 100) {
+            throw new IllegalArgumentException("Artist name is too long");
+        }
+
         artist = artist.replaceAll("[\n\r]", "_");
+
         if (songsCache.containsKey(artist)) {
             logger.log(Level.INFO, "[CACHE] Retrieved songs for artist: {0}", artist);
             return songsCache.get(artist);
         }
+
         logger.log(Level.INFO, "[DB] Querying database for artist: {0}", artist);
+
         List<Song> songs = songRepository.findByArtist(artist);
+
         songsCache.put(artist, songs);
+
         logger.log(Level.INFO, "[CACHE] Added songs to cache for artist: {0}", artist);
         return songs;
-    }*/
-   public List<Song> getSongsByArtist(String artist) {
-       // Валидация и санация входных данных
-       if (artist == null || artist.isEmpty()) {
-           throw new IllegalArgumentException("Artist name cannot be null or empty");
-       }
-
-       // Ограничение длины входных данных
-       if (artist.length() > 100) {
-           throw new IllegalArgumentException("Artist name is too long");
-       }
-
-       // Санация входных данных
-       artist = artist.replaceAll("[\n\r]", "_");
-
-       // Проверка кэша
-       if (songsCache.containsKey(artist)) {
-           logger.log(Level.INFO, "[CACHE] Retrieved songs for artist: {0}", artist);
-           return songsCache.get(artist);
-       }
-
-       // Логирование безопасных данных
-       logger.log(Level.INFO, "[DB] Querying database for artist: {0}", artist);
-
-       // Использование параметризованных запросов в songRepository.findByArtist(artist)
-       List<Song> songs = songRepository.findByArtist(artist);
-
-       // Добавление в кэш
-       songsCache.put(artist, songs);
-
-       logger.log(Level.INFO, "[CACHE] Added songs to cache for artist: {0}", artist);
-       return songs;
-   }
+    }
 }
 
 
