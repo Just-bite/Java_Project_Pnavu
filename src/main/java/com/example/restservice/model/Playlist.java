@@ -1,6 +1,7 @@
 package com.example.restservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,12 +28,17 @@ import lombok.Setter;
 public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Уникальный идентификатор плейлиста", example = "1",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
+    @Schema(description = "Название плейлиста", example = "My playlist",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
+    @Schema(description = "Сущность пользователя", accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
 
     @ManyToMany
@@ -41,5 +47,6 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
+    @Schema(description = "Список песен", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Song> songs;
 }
