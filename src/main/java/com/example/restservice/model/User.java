@@ -27,7 +27,7 @@ import lombok.Setter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Ункальный идентификатор песни",
+    @Schema(description = "Ункальный идентификатор пользователя",
             example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
