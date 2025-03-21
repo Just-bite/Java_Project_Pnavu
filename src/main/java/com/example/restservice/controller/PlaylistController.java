@@ -53,7 +53,7 @@ public class PlaylistController {
     @PostMapping("/{playlistId}/add-songs")
     @Operation(
             summary = "Добавление песен в плейлист",
-            description = "Добавляет в  плейлист с полученым id песни"
+            description = "В плейлист с полученным id добавляет песни"
     )
     public Playlist addSongsToPlaylist(@PathVariable Long playlistId,
                                        @RequestBody List<Long> songIds) {
