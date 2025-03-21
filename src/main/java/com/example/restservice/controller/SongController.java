@@ -3,6 +3,7 @@ package com.example.restservice.controller;
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -74,7 +75,8 @@ public class SongController {
             summary = "Вывод по автору",
             description = "Выводит все песни принадлежащие переданному автору"
     )
-    public List<Song> getSongsByArtist(@RequestParam String artist) {
+    public List<Song> getSongsByArtist(@RequestParam @Parameter(description = "Псевдоним автора",
+                                                          example = "Монеточка") String artist) {
         if (artist == null || artist.isEmpty()) {
             throw new IllegalArgumentException("Artist name cannot be null or empty");
         }
