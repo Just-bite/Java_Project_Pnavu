@@ -3,7 +3,6 @@ package com.example.restservice.controller;
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +36,7 @@ public class UserController {
     @Operation(
             summary = "Создает пользователей"
     )
-    public List<User> createUsers(@RequestBody @Parameter(description = "List<Users>",
-            example = "[{ username: name }]") List<User> users) {
+    public List<User> createUsers(@RequestBody List<User> users) {
         return userService.createUsers(users);
     }
 
