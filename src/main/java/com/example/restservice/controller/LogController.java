@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.core.io.Resource;
@@ -77,24 +80,34 @@ public class LogController {
         return filteredLogs;
     }
 
-    // Создание временного файла с отфильтрованными логами
     private File createTempLogFile(List<String> logs, String date) throws IOException {
-        // Очищаем дату от недопустимых символов
         String safeDate = sanitizeFilename(date);
 
-        // Создаём временный файл с безопасным именем
-        File tempFile = File.createTempFile("logs-" + safeDate, ".log");
-        tempFile.deleteOnExit(); // Удаляем файл после завершения работы приложения
+        Path tempDir = Paths.get(System.getProperty("java.io.tmpdir")).toAbsolutePath().normalize();
 
-        // Записываем отфильтрованные логи во временный файл
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+        if (!Files.isDirectory(tempDir) || Files.isSymbolicLink(tempDir)) {
+            throw new IOException("Unsafe temporary directory: " + tempDir);
+        }
+
+        Path tempFile = Files.createTempFile(tempDir, "logs-" + safeDate + "-", ".log");
+
+        try {
+            Files.setPosixFilePermissions(tempFile, PosixFilePermissions.fromString("rw-------"));
+        } catch (UnsupportedOperationException e) {
+            // Windows не поддерживает POSIX-права
+        }
+
+        try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8,
+                                                                  StandardOpenOption.WRITE)) {
             for (String log : logs) {
                 writer.write(log);
                 writer.newLine();
             }
         }
 
-        return tempFile;
+        tempFile.toFile().deleteOnExit();
+
+        return tempFile.toFile();
     }
 
     // Очистка имени файла от недопустимых символов
