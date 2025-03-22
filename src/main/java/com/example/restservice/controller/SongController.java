@@ -1,7 +1,8 @@
 package com.example.restservice.controller;
 
-import com.example.restservice.BadRequestException;
-import com.example.restservice.NotFoundException;
+import com.example.restservice.exception.BadRequestException;
+import com.example.restservice.exception.CustomExceptionHandler;
+import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/songs")
 @RequiredArgsConstructor
 @Tag(name = "Контроллер песен", description = "Позволяет получать, создавать и удалять песни")
+@CustomExceptionHandler
 public class SongController {
     private final SongService songService;
 

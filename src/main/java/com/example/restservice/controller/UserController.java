@@ -1,8 +1,8 @@
 package com.example.restservice.controller;
 
-import com.example.restservice.BadRequestException;
-import com.example.restservice.CustomExceptionHandler;
-import com.example.restservice.NotFoundException;
+import com.example.restservice.exception.BadRequestException;
+import com.example.restservice.exception.CustomExceptionHandler;
+import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-@CustomExceptionHandler
 @Tag(name = "Контроллер пользователей", description
           = "Позволяет получать, создавать и удалять пользователей")
+@CustomExceptionHandler
 public class UserController {
     private final UserService userService;
 

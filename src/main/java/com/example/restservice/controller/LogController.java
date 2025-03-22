@@ -1,5 +1,6 @@
 package com.example.restservice.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/logs")
+@Tag(name = "Контроллер логов", description =
+        "Позволяет получать логи на введенную дату")
 public class LogController {
 
     // Основной файл логов

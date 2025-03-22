@@ -1,4 +1,4 @@
-package com.example.restservice;
+package com.example.restservice.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice(annotations = CustomExceptionHandler.class)
+@ControllerAdvice(basePackages = "com.example.restservice.controller",
+                            annotations = CustomExceptionHandler.class)
 public class CustomExceptionHandlerAdvice {
 
     @ExceptionHandler(BadRequestException.class)
@@ -25,4 +26,3 @@ public class CustomExceptionHandlerAdvice {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
-
