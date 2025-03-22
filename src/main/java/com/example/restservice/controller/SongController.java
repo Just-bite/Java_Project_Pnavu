@@ -1,5 +1,6 @@
 package com.example.restservice.controller;
 
+import com.example.restservice.BadRequestException;
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,16 +32,27 @@ public class SongController {
             description = "Выводит все хранимые песни"
     )
     public List<Song> getAllSongs() {
-        return songService.getAllSongs();
+        List<Song> songs = songService.getAllSongs();
+        if (songs.isEmpty()) {
+            throw new BadRequestException("Список песен пуст");
+        }
+        return songs;
     }
 
     @GetMapping("/{id}")
     @Operation(
             summary = "Вывод песни",
-            description = "Выводит песню по ee id"
+            description = "Выводит песню по её id"
     )
     public Song getSongById(@PathVariable Long id) {
-        return songService.getSongById(id);
+        if (id == null || id <= 0) {
+            throw new BadRequestException("Некорректный id песни: " + id);
+        }
+        Song song = songService.getSongById(id);
+        if (song == null) {
+            throw new BadRequestException("Песни с id " + id + " не существует");
+        }
+        return song;
     }
 
     @PostMapping
@@ -49,39 +61,61 @@ public class SongController {
             description = "Добавляет новые песни к существующим"
     )
     public List<Song> createSongs(@RequestBody List<Song> songs) {
+        if (songs == null || songs.isEmpty()) {
+            throw new BadRequestException("Список песен не может быть пустым");
+        }
         return songService.createSongs(songs);
     }
 
     @PutMapping("/{id}")
     @Operation(
             summary = "Обновляет песню",
-            description = "Обновляет песню по ee id, заменяет автора и название"
+            description = "Обновляет песню по её id, заменяет автора и название"
     )
     public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
-        return songService.updateSong(id, song);
+        if (id == null || id <= 0) {
+            throw new BadRequestException("Некорректный id: " + id);
+        }
+        if (song == null) {
+            throw new BadRequestException("Данные песни не могут быть null");
+        }
+        Song updatedSong = songService.updateSong(id, song);
+        if (updatedSong == null) {
+            throw new BadRequestException("Песня с id " + id + " не найдена");
+        }
+        return updatedSong;
     }
 
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Удаляет песню",
-            description = "Удаляет песню по ее id"
+            description = "Удаляет песню по её id"
     )
     public void deleteSong(@PathVariable Long id) {
+        if (id == null || id <= 0) {
+            throw new BadRequestException("Некорректный id: " + id);
+        }
+        if (songService.getSongById(id) == null) {
+            throw new BadRequestException("Песня с id " + id + " не найдена");
+        }
         songService.deleteSong(id);
     }
 
     @GetMapping("/by-artist")
     @Operation(
             summary = "Вывод по автору",
-            description = "Выводит все песни принадлежащие переданному автору"
+            description = "Выводит все песни, принадлежащие переданному автору"
     )
     public List<Song> getSongsByArtist(@RequestParam @Parameter(description = "Псевдоним автора",
-                                                          example = "Монеточка") String artist) {
+            example = "Монеточка") String artist) {
         if (artist == null || artist.isEmpty()) {
-            throw new IllegalArgumentException("Artist name cannot be null or empty");
+            throw new BadRequestException("Имя автора не может быть пустым");
         }
-
-        return songService.getSongsByArtist(artist);
+        List<Song> songs = songService.getSongsByArtist(artist);
+        if (songs.isEmpty()) {
+            throw new BadRequestException("Песни автора " + artist + " не найдены");
+        }
+        return songs;
     }
 
 }

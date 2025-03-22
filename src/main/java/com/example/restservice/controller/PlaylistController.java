@@ -1,5 +1,6 @@
 package com.example.restservice.controller;
 
+import com.example.restservice.BadRequestException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.service.PlaylistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,11 @@ public class PlaylistController {
             description = "Выводит все плейлисты и информацию о песнях, в них хранящихся"
     )
     public List<Playlist> getAllPlaylists() {
-        return playlistService.getAllPlaylists();
+        List<Playlist> playlists = playlistService.getAllPlaylists();
+        if (playlists.isEmpty()) {
+            throw new BadRequestException("Список плейлистов пуст");
+        }
+        return playlists;
     }
 
     @GetMapping("/{id}")
@@ -38,7 +43,11 @@ public class PlaylistController {
             summary = "Возвращает плейлист по id"
     )
     public Playlist getPlaylistById(@PathVariable Long id) {
-        return playlistService.getPlaylistById(id);
+        Playlist playlist = playlistService.getPlaylistById(id);
+        if (playlist == null) {
+            throw new BadRequestException("Плейлист с id " + id + " не найден");
+        }
+        return playlist;
     }
 
     @PostMapping("/create/{userId}")
@@ -47,6 +56,12 @@ public class PlaylistController {
             description = "Создает пустой плейлист для пользователя с полученым id"
     )
     public Playlist createPlaylist(@RequestBody Playlist playlist, @PathVariable Long userId) {
+        if (playlist == null) {
+            throw new BadRequestException("Плейлист не может быть null");
+        }
+        if (userId == null || userId <= 0) {
+            throw new BadRequestException("Некорректный userId: " + userId);
+        }
         return playlistService.createPlaylist(playlist, userId);
     }
 
@@ -57,6 +72,12 @@ public class PlaylistController {
     )
     public Playlist addSongsToPlaylist(@PathVariable Long playlistId,
                                        @RequestBody List<Long> songIds) {
+        if (playlistId == null || playlistId <= 0) {
+            throw new BadRequestException("Некорректный playlistId: " + playlistId);
+        }
+        if (songIds == null || songIds.isEmpty()) {
+            throw new BadRequestException("Список songIds не может быть пустым");
+        }
         return playlistService.addSongsToPlaylist(playlistId, songIds);
     }
 
@@ -66,6 +87,10 @@ public class PlaylistController {
             description = "Удаляет плейлист по его id"
     )
     public void deletePlaylist(@PathVariable Long id) {
+        Playlist playlist = getPlaylistById(id);
+        if (playlist == null) {
+            throw new BadRequestException("Плейлист с id " + id + " не найден");
+        }
         playlistService.deletePlaylist(id);
     }
 
@@ -73,10 +98,14 @@ public class PlaylistController {
     @Operation(
             summary = "Вывод непустых плейлистов",
             description = "Выводит все плейлисты и информацию о песнях, в них хранящихся,"
-                        + "если они непустые"
+                    + "если они непустые"
     )
     public List<Playlist> getPlaylistsWithSongs() {
-        return playlistService.getPlaylistsWithSongs();
+        List<Playlist> playlists = playlistService.getPlaylistsWithSongs();
+        if (playlists.isEmpty()) {
+            throw new BadRequestException("Непустые плейлисты не найдены");
+        }
+        return playlists;
     }
 }
 
