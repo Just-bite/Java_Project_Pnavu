@@ -1,6 +1,5 @@
 package com.example.restservice;
 
-import com.example.restservice.controller.CustomExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

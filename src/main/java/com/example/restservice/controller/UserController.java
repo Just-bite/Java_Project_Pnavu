@@ -1,6 +1,7 @@
 package com.example.restservice.controller;
 
 import com.example.restservice.BadRequestException;
+import com.example.restservice.CustomExceptionHandler;
 import com.example.restservice.NotFoundException;
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;

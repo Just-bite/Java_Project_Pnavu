@@ -1,4 +1,4 @@
-package com.example.restservice.controller;
+package com.example.restservice;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
