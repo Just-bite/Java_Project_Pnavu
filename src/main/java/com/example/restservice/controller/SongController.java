@@ -1,6 +1,7 @@
 package com.example.restservice.controller;
 
 import com.example.restservice.BadRequestException;
+import com.example.restservice.NotFoundException;
 import com.example.restservice.model.Song;
 import com.example.restservice.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,7 @@ public class SongController {
     public List<Song> getAllSongs() {
         List<Song> songs = songService.getAllSongs();
         if (songs.isEmpty()) {
-            throw new BadRequestException("Список песен пуст");
+            throw new NotFoundException("Список песен пуст");
         }
         return songs;
     }
@@ -50,7 +51,7 @@ public class SongController {
         }
         Song song = songService.getSongById(id);
         if (song == null) {
-            throw new BadRequestException("Песни с id " + id + " не существует");
+            throw new NotFoundException("Песни с id " + id + " не существует");
         }
         return song;
     }
@@ -81,7 +82,7 @@ public class SongController {
         }
         Song updatedSong = songService.updateSong(id, song);
         if (updatedSong == null) {
-            throw new BadRequestException("Песня с id " + id + " не найдена");
+            throw new NotFoundException("Песня с id " + id + " не найдена");
         }
         return updatedSong;
     }
@@ -96,7 +97,7 @@ public class SongController {
             throw new BadRequestException("Некорректный id: " + id);
         }
         if (songService.getSongById(id) == null) {
-            throw new BadRequestException("Песня с id " + id + " не найдена");
+            throw new NotFoundException("Песня с id " + id + " не найдена");
         }
         songService.deleteSong(id);
     }
@@ -113,7 +114,7 @@ public class SongController {
         }
         List<Song> songs = songService.getSongsByArtist(artist);
         if (songs.isEmpty()) {
-            throw new BadRequestException("Песни автора " + artist + " не найдены");
+            throw new NotFoundException("Песни автора " + artist + " не найдены");
         }
         return songs;
     }

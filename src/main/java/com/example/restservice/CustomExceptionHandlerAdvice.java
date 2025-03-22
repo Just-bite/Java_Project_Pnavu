@@ -1,4 +1,5 @@
 package com.example.restservice;
+
 import com.example.restservice.controller.CustomExceptionHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,14 @@ public class CustomExceptionHandlerAdvice {
         String message = ex.getMessage();
         ErrorResponse response = new ErrorResponse(message);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
+        String message = ex.getMessage();
+        ErrorResponse response = new ErrorResponse(message);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
 

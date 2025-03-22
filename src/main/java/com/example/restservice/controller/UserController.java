@@ -1,6 +1,7 @@
 package com.example.restservice.controller;
 
 import com.example.restservice.BadRequestException;
+import com.example.restservice.NotFoundException;
 import com.example.restservice.model.User;
 import com.example.restservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class UserController {
     public List<User> getAllUsers() {
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
-            throw new BadRequestException("Список пользователей пуст");
+            throw new NotFoundException("Список пользователей пуст");
         }
         return userService.getAllUsers();
     }
@@ -46,7 +47,7 @@ public class UserController {
     public User getUserById(@PathVariable long id) {
         User user = userService.getUserById(id);
         if (user == null) {
-            throw new BadRequestException("Пользователь с id " + id + " не найден");
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
         return user;
     }
@@ -70,7 +71,7 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user == null) {
-            throw new BadRequestException("Пользователь с id " + id + " не найден");
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
         }
         userService.deleteUser(id);
     }

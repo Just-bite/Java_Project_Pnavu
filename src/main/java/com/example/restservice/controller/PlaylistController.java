@@ -1,6 +1,7 @@
 package com.example.restservice.controller;
 
 import com.example.restservice.BadRequestException;
+import com.example.restservice.NotFoundException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.service.PlaylistService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +34,7 @@ public class PlaylistController {
     public List<Playlist> getAllPlaylists() {
         List<Playlist> playlists = playlistService.getAllPlaylists();
         if (playlists.isEmpty()) {
-            throw new BadRequestException("Список плейлистов пуст");
+            throw new NotFoundException("Список плейлистов пуст");
         }
         return playlists;
     }
@@ -45,7 +46,7 @@ public class PlaylistController {
     public Playlist getPlaylistById(@PathVariable Long id) {
         Playlist playlist = playlistService.getPlaylistById(id);
         if (playlist == null) {
-            throw new BadRequestException("Плейлист с id " + id + " не найден");
+            throw new NotFoundException("Плейлист с id " + id + " не найден");
         }
         return playlist;
     }
@@ -89,7 +90,7 @@ public class PlaylistController {
     public void deletePlaylist(@PathVariable Long id) {
         Playlist playlist = getPlaylistById(id);
         if (playlist == null) {
-            throw new BadRequestException("Плейлист с id " + id + " не найден");
+            throw new NotFoundException("Плейлист с id " + id + " не найден");
         }
         playlistService.deletePlaylist(id);
     }
@@ -103,7 +104,7 @@ public class PlaylistController {
     public List<Playlist> getPlaylistsWithSongs() {
         List<Playlist> playlists = playlistService.getPlaylistsWithSongs();
         if (playlists.isEmpty()) {
-            throw new BadRequestException("Непустые плейлисты не найдены");
+            throw new NotFoundException("Непустые плейлисты не найдены");
         }
         return playlists;
     }
