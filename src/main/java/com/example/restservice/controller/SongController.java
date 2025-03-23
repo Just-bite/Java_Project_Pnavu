@@ -20,105 +20,104 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/songs")
 @RequiredArgsConstructor
-@Tag(name = "Контроллер песен", description = "Позволяет получать, создавать и удалять песни")
+@Tag(name = "Song Controller", description = "Allows retrieving, creating, and deleting songs")
 @CustomExceptionHandler
 public class SongController {
     private final SongService songService;
+    private static final String MESSAGE = "Song with id ";
 
     @GetMapping
     @Operation(
-            summary = "Вывод песен",
-            description = "Выводит все хранимые песни"
+            summary = "Get all songs",
+            description = "Retrieves all stored songs"
     )
     public List<Song> getAllSongs() {
         List<Song> songs = songService.getAllSongs();
         if (songs.isEmpty()) {
-            throw new NotFoundException("Список песен пуст");
+            throw new NotFoundException("The song list is empty");
         }
         return songs;
     }
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Вывод песни",
-            description = "Выводит песню по её id"
+            summary = "Get song by id",
+            description = "Retrieves a song by its id"
     )
     public Song getSongById(@PathVariable Long id) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Некорректный id песни: " + id);
+            throw new BadRequestException("Invalid song id: " + id);
         }
         Song song = songService.getSongById(id);
         if (song == null) {
-            throw new NotFoundException("Песни с id " + id + " не существует");
+            throw new NotFoundException(MESSAGE + id + " does not exist");
         }
         return song;
     }
 
     @PostMapping
     @Operation(
-            summary = "Добавление песен",
-            description = "Добавляет новые песни к существующим"
+            summary = "Add songs",
+            description = "Adds new songs to the existing ones"
     )
     public List<Song> createSongs(@RequestBody List<Song> songs) {
         if (songs == null || songs.isEmpty()) {
-            throw new BadRequestException("Список песен не может быть пустым");
+            throw new BadRequestException("The song list cannot be empty");
         }
         return songService.createSongs(songs);
     }
 
     @PutMapping("/{id}")
     @Operation(
-            summary = "Обновляет песню",
-            description = "Обновляет песню по её id, заменяет автора и название"
+            summary = "Update a song",
+            description = "Updates a song by its id, replacing the artist and title"
     )
     public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Некорректный id: " + id);
+            throw new BadRequestException("Invalid id: " + id);
         }
         if (song == null) {
-            throw new BadRequestException("Данные песни не могут быть null");
+            throw new BadRequestException("Song data cannot be null");
         }
         Song updatedSong = songService.updateSong(id, song);
         if (updatedSong == null) {
-            throw new NotFoundException("Песня с id " + id + " не найдена");
+            throw new NotFoundException(MESSAGE + id + " not found");
         }
         return updatedSong;
     }
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Удаляет песню",
-            description = "Удаляет песню по её id"
+            summary = "Delete a song",
+            description = "Deletes a song by its id"
     )
     public void deleteSong(@PathVariable Long id) {
         if (id == null || id <= 0) {
-            throw new BadRequestException("Некорректный id: " + id);
+            throw new BadRequestException("Invalid id: " + id);
         }
         if (songService.getSongById(id) == null) {
-            throw new NotFoundException("Песня с id " + id + " не найдена");
+            throw new NotFoundException(MESSAGE + id + " not found");
         }
         songService.deleteSong(id);
     }
 
     @GetMapping("/by-artist")
     @Operation(
-            summary = "Вывод по автору",
-            description = "Выводит все песни, принадлежащие переданному автору"
+            summary = "Get songs by artist",
+            description = "Retrieves all songs by the specified artist"
     )
-    public List<Song> getSongsByArtist(@RequestParam @Parameter(description = "Псевдоним автора",
+    public List<Song> getSongsByArtist(@RequestParam @Parameter(description = "Artist's pseudonym",
             example = "Монеточка") String artist) {
         if (artist == null || artist.isEmpty()) {
-            throw new BadRequestException("Имя автора не может быть пустым");
+            throw new BadRequestException("Artist name cannot be empty");
         }
         List<Song> songs = songService.getSongsByArtist(artist);
         if (songs.isEmpty()) {
-            throw new NotFoundException("Песни автора " + artist + " не найдены");
+            throw new NotFoundException("No songs found for artist " + artist);
         }
         return songs;
     }
-
 }

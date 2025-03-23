@@ -21,24 +21,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Сущность песни")
+@Schema(description = "Song entity")
 public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Уникальный идентификатор песни", example = "1",
+    @Schema(description = "Song ID", example = "1",
             accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
     @Column(nullable = false)
-    @Schema(description = "Название песни",
+    @Schema(description = "Song title",
             example = "Hello", accessMode = Schema.AccessMode.READ_ONLY)
     private String title;
     @Column(nullable = false)
-    @Schema(description = "Псевдоним артиста",
+    @Schema(description = "Artists pseudonim",
             example = "Adele", accessMode = Schema.AccessMode.READ_ONLY)
     private String artist;
     @ManyToMany(mappedBy = "songs")
     @JsonBackReference
-    @Schema(description = "Название плейлистов в которых хранится данная песня",
+    @Schema(description = "Names of playlists that contain current song",
             example = "My playlist", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Playlist> playlists;
 

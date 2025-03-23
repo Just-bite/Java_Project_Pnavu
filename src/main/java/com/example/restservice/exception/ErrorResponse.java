@@ -7,13 +7,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "Сущность ошибки")
+@Schema(description = "Error message entity")
 public class ErrorResponse {
-    @Schema(description = "Время возникновения ошибки",
+    @Schema(description = "Time when error occur",
             example = "2025-03-22T23:25:54.9462762", accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime timestamp;
-    @Schema(description = "Описание ошибки",
-            example = "Пользователь с id 22 не найден", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Errors description",
+            example = "User with id XX not found", accessMode = Schema.AccessMode.READ_ONLY)
     private String message;
 
     public ErrorResponse(String message) {

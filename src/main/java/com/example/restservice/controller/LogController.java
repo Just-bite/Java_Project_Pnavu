@@ -27,40 +27,31 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/logs")
-@Tag(name = "Контроллер логов", description =
-        "Позволяет получать логи на введенную дату")
+@Tag(name = "Log Controller", description =
+        "Allows to get logs on given date")
 public class LogController {
 
-    // Основной файл логов
     private static final String LOG_FILE_PATH = "logs/app.log";
 
     @GetMapping("/{date}")
     public ResponseEntity<Resource> getLogsByDate(@PathVariable String date) throws IOException {
-        // Проверяем, существует ли основной файл логов
         File logFile = new File(LOG_FILE_PATH);
         if (!logFile.exists()) {
-            return ResponseEntity.notFound().build(); // Возвращаем 404, если файл не найден
+            return ResponseEntity.notFound().build();
         }
 
-        // Читаем логи из основного файла
         List<String> logs = readLogsFromFile(logFile);
 
-        // Фильтруем логи по указанной дате
         List<String> filteredLogs = filterLogsByDate(logs, date);
-
-        // Если логи за указанную дату не найдены, возвращаем 404
         if (filteredLogs.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        // Создаём временный файл с отфильтрованными логами
         File tempLogFile = createTempLogFile(filteredLogs, date);
 
-        // Возвращаем временный файл
         return createFileResponse(tempLogFile);
     }
 
-    // Чтение логов из основного файла
     private List<String> readLogsFromFile(File logFile) throws IOException {
         List<String> logs = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
@@ -72,11 +63,10 @@ public class LogController {
         return logs;
     }
 
-    // Фильтрация логов по дате
     private List<String> filterLogsByDate(List<String> logs, String date) {
         List<String> filteredLogs = new ArrayList<>();
         for (String log : logs) {
-            if (log.contains(date)) { // Проверяем, содержит ли строка лога указанную дату
+            if (log.contains(date)) {
                 filteredLogs.add(log);
             }
         }
@@ -97,7 +87,7 @@ public class LogController {
         try {
             Files.setPosixFilePermissions(tempFile, PosixFilePermissions.fromString("rw-------"));
         } catch (UnsupportedOperationException e) {
-            // Windows не поддерживает POSIX-права
+            // Windows does not support POSIX rights
         }
 
         try (BufferedWriter writer = Files.newBufferedWriter(tempFile, StandardCharsets.UTF_8,
@@ -113,17 +103,14 @@ public class LogController {
         return tempFile.toFile();
     }
 
-    // Очистка имени файла от недопустимых символов
     private String sanitizeFilename(String filename) {
         if (filename == null) {
             return "unknown";
         }
 
-        // Удаляем все недопустимые символы
         return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
     }
 
-    // Создание ответа с файлом
     private ResponseEntity<Resource> createFileResponse(File file) throws MalformedURLException {
         Path path = Paths.get(file.getAbsolutePath());
         Resource resource = new UrlResource(path.toUri());

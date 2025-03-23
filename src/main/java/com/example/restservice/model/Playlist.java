@@ -24,21 +24,21 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Сущность плейлиста")
+@Schema(description = "Playlist entity")
 public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Уникальный идентификатор плейлиста", example = "1",
+    @Schema(description = "Playlist ID", example = "1",
             accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
-    @Schema(description = "Название плейлиста", example = "My playlist",
+    @Schema(description = "Playlist's name", example = "My playlist",
             accessMode = Schema.AccessMode.READ_ONLY)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    @Schema(description = "Сущность пользователя", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "User entity", accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
 
     @ManyToMany
@@ -47,6 +47,7 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
-    @Schema(description = "Список песен", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "List of songs that are stored in current playlist",
+                                    accessMode = Schema.AccessMode.READ_ONLY)
     private List<Song> songs;
 }

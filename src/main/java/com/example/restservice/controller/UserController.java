@@ -17,62 +17,61 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-@Tag(name = "Контроллер пользователей", description
-          = "Позволяет получать, создавать и удалять пользователей")
+@Tag(name = "User Controller", description
+        = "Allows retrieving, creating, and deleting users")
 @CustomExceptionHandler
 public class UserController {
     private final UserService userService;
 
     @GetMapping
     @Operation(
-            summary = "Выводит пользователей",
-            description = "Выводит всех пользователей и информацию о них"
+            summary = "Get all users",
+            description = "Retrieves all users and their information"
     )
     public List<User> getAllUsers() {
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
-            throw new NotFoundException("Список пользователей пуст");
+            throw new NotFoundException("The user list is empty");
         }
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Выводит пользователя",
-            description = "Выводит пользователя по его уникальному идентификатору"
+            summary = "Get user by id",
+            description = "Retrieves a user by their unique identifier"
     )
     public User getUserById(@PathVariable long id) {
         User user = userService.getUserById(id);
         if (user == null) {
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
+            throw new NotFoundException("User with id " + id + " not found");
         }
         return user;
     }
 
     @PostMapping
     @Operation(
-            summary = "Создает пользователей"
+            summary = "Create users"
     )
     public List<User> createUsers(@RequestBody List<User> users) {
         if (users == null || users.isEmpty()) {
-            throw new BadRequestException("Список пользователей не может быть пустым");
+            throw new BadRequestException("The user list cannot be empty");
         }
         return userService.createUsers(users);
     }
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Удаляет пользователя",
-            description = "Удаляет пользователя по его id"
+            summary = "Delete a user",
+            description = "Deletes a user by their id"
     )
     public void deleteUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         if (user == null) {
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
+            throw new NotFoundException("User with id " + id + " not found");
         }
         userService.deleteUser(id);
     }

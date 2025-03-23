@@ -17,98 +17,96 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/playlists")
 @RequiredArgsConstructor
-@Tag(name = "Контроллер плейлистов", description =
-            "Позволяет получать, создавать и удалять плейлисты,"
-          + "а также наполнять их песнями и изменять их содержимое")
+@Tag(name = "Playlist Controller", description =
+        "Allows retrieving, creating, and deleting playlists, "
+                + "as well as adding songs to them and modifying their contents")
 @CustomExceptionHandler
 public class PlaylistController {
     private final PlaylistService playlistService;
 
     @GetMapping
     @Operation(
-            summary = "Вывод плейлистов",
-            description = "Выводит все плейлисты и информацию о песнях, в них хранящихся"
+            summary = "Get all playlists",
+            description = "Retrieves all playlists and information about the songs they contain"
     )
     public List<Playlist> getAllPlaylists() {
         List<Playlist> playlists = playlistService.getAllPlaylists();
         if (playlists.isEmpty()) {
-            throw new NotFoundException("Список плейлистов пуст");
+            throw new NotFoundException("The playlist list is empty");
         }
         return playlists;
     }
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Возвращает плейлист по id"
+            summary = "Get playlist by id"
     )
     public Playlist getPlaylistById(@PathVariable Long id) {
         Playlist playlist = playlistService.getPlaylistById(id);
         if (playlist == null) {
-            throw new NotFoundException("Плейлист с id " + id + " не найден");
+            throw new NotFoundException("Playlist with id " + id + " not found");
         }
         return playlist;
     }
 
     @PostMapping("/create/{userId}")
     @Operation(
-            summary = "Создание плейлиста",
-            description = "Создает пустой плейлист для пользователя с полученым id"
+            summary = "Create a playlist",
+            description = "Creates an empty playlist for the user with the provided id"
     )
     public Playlist createPlaylist(@RequestBody Playlist playlist, @PathVariable Long userId) {
         if (playlist == null) {
-            throw new BadRequestException("Плейлист не может быть null");
+            throw new BadRequestException("Playlist cannot be null");
         }
         if (userId == null || userId <= 0) {
-            throw new BadRequestException("Некорректный userId: " + userId);
+            throw new BadRequestException("Invalid userId: " + userId);
         }
         return playlistService.createPlaylist(playlist, userId);
     }
 
     @PostMapping("/{playlistId}/add-songs")
     @Operation(
-            summary = "Добавление песен в плейлист",
-            description = "В плейлист с полученным id добавляет песни"
+            summary = "Add songs to a playlist",
+            description = "Adds songs to the playlist with the provided id"
     )
     public Playlist addSongsToPlaylist(@PathVariable Long playlistId,
                                        @RequestBody List<Long> songIds) {
         if (playlistId == null || playlistId <= 0) {
-            throw new BadRequestException("Некорректный playlistId: " + playlistId);
+            throw new BadRequestException("Invalid playlistId: " + playlistId);
         }
         if (songIds == null || songIds.isEmpty()) {
-            throw new BadRequestException("Список songIds не может быть пустым");
+            throw new BadRequestException("The songIds list cannot be empty");
         }
         return playlistService.addSongsToPlaylist(playlistId, songIds);
     }
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Удаление плейлиста",
-            description = "Удаляет плейлист по его id"
+            summary = "Delete a playlist",
+            description = "Deletes the playlist with the provided id"
     )
     public void deletePlaylist(@PathVariable Long id) {
         Playlist playlist = getPlaylistById(id);
         if (playlist == null) {
-            throw new NotFoundException("Плейлист с id " + id + " не найден");
+            throw new NotFoundException("Playlist with id " + id + " not found");
         }
         playlistService.deletePlaylist(id);
     }
 
     @GetMapping("/with-songs")
     @Operation(
-            summary = "Вывод непустых плейлистов",
-            description = "Выводит все плейлисты и информацию о песнях, в них хранящихся,"
-                    + "если они непустые"
+            summary = "Get non-empty playlists",
+            description = "Retrieves all playlists and information about the songs they contain, "
+                    + "if they are not empty"
     )
     public List<Playlist> getPlaylistsWithSongs() {
         List<Playlist> playlists = playlistService.getPlaylistsWithSongs();
         if (playlists.isEmpty()) {
-            throw new NotFoundException("Непустые плейлисты не найдены");
+            throw new NotFoundException("No non-empty playlists found");
         }
         return playlists;
     }
 }
-

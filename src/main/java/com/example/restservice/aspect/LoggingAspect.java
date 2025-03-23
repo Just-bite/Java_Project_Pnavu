@@ -15,7 +15,6 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    // Логирование перед выполнением метода
     @Before("execution(* com.example.restservice..*(..))")
     public void logBefore(JoinPoint joinPoint) {
         if (logger.isInfoEnabled()) {
@@ -27,7 +26,6 @@ public class LoggingAspect {
         }
     }
 
-    // Логирование после успешного выполнения метода
     @AfterReturning(pointcut = "execution(* com.example.restservice..*(..))", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         if (logger.isInfoEnabled()) {
@@ -39,7 +37,6 @@ public class LoggingAspect {
         }
     }
 
-    // Логирование при возникновении ошибки
     @AfterThrowing(pointcut = "execution(* com.example.restservice..*(..))", throwing = "error")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
         if (logger.isErrorEnabled()) {
