@@ -43,7 +43,7 @@ public class LoggingAspect {
             logger.atError()
                     .setMessage("Ошибка в методе: {}, ошбика {}")
                     .addArgument(joinPoint.getSignature().toShortString())
-                    .addArgument(error)
+                    .addArgument(error.getMessage())
                     .log();
         }
     }

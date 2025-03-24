@@ -25,4 +25,12 @@ public class CustomExceptionHandlerAdvice {
         ErrorResponse response = new ErrorResponse(message);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+        String message = ex.getMessage();
+        ErrorResponse response = new ErrorResponse(message);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
 }

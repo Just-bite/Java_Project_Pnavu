@@ -1,5 +1,6 @@
 package com.example.restservice.controller;
 
+import com.example.restservice.exception.NotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -66,9 +67,12 @@ public class LogController {
     private List<String> filterLogsByDate(List<String> logs, String date) {
         List<String> filteredLogs = new ArrayList<>();
         for (String log : logs) {
-            if (log.contains(date)) {
+            if (log.startsWith(date)) {
                 filteredLogs.add(log);
             }
+        }
+        if (filteredLogs.isEmpty()) {
+            throw new NotFoundException("No matching logs found");
         }
         return filteredLogs;
     }
