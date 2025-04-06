@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.User;
 import com.example.restservice.repository.PlaylistRepository;
@@ -32,7 +33,7 @@ public class UserService {
 
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         List<Playlist> playlists = user.getPlaylists();
         playlistRepository.deleteAll(playlists);

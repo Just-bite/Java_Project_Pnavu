@@ -5,14 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @ControllerAdvice(basePackages = "com.example.restservice.controller",
                             annotations = CustomExceptionHandler.class)
 public class CustomExceptionHandlerAdvice {
 
-    @ExceptionHandler(BadRequestException.class)
+    @ExceptionHandler({BadRequestException.class, MethodArgumentTypeMismatchException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(Exception ex) {
         String message = ex.getMessage();
         ErrorResponse response = new ErrorResponse(message);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -27,10 +28,10 @@ public class CustomExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-        String message = ex.getMessage();
+        String message = ex.toString();
         ErrorResponse response = new ErrorResponse(message);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

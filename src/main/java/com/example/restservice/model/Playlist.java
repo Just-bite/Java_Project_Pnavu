@@ -12,6 +12,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class Playlist {
     private Long id;
     @Schema(description = "Playlist's name", example = "My playlist",
             accessMode = Schema.AccessMode.READ_ONLY)
+    @NotBlank
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

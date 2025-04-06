@@ -7,6 +7,8 @@ import com.example.restservice.model.Playlist;
 import com.example.restservice.service.PlaylistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -57,11 +59,12 @@ public class PlaylistController {
             summary = "Create a playlist",
             description = "Creates an empty playlist for the user with the provided id"
     )
-    public Playlist createPlaylist(@RequestBody Playlist playlist, @PathVariable Long userId) {
+    public Playlist createPlaylist(@Valid @RequestBody Playlist playlist,
+                                   @NotNull @PathVariable Long userId) {
         if (playlist == null) {
             throw new BadRequestException("Playlist cannot be null");
         }
-        if (userId == null || userId <= 0) {
+        if (userId <= 0) {
             throw new BadRequestException("Invalid userId: " + userId);
         }
         return playlistService.createPlaylist(playlist, userId);

@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+import com.example.restservice.exception.BadRequestException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.Song;
 import com.example.restservice.repository.PlaylistRepository;
@@ -34,14 +35,14 @@ public class SongService {
 
     public Song updateSong(Long id, Song song) {
         Song existingSong = getSongById(id);
-
+        String oldArtist = existingSong.getArtist();
 
         existingSong.setTitle(song.getTitle());
         existingSong.setArtist(song.getArtist());
         Song updatedSong = songRepository.save(existingSong);
 
 
-        songsCache.remove(existingSong.getArtist());
+        songsCache.remove(oldArtist);
         logger.log(Level.INFO, "[CACHE] Removed outdated cache for artist: {0}",
                                                             existingSong.getArtist());
 
@@ -64,11 +65,11 @@ public class SongService {
 
     public List<Song> getSongsByArtist(String artist) {
         if (artist == null || artist.isEmpty()) {
-            throw new IllegalArgumentException("Artist name cannot be null or empty");
+            throw new BadRequestException("Artist name cannot be null or empty");
         }
 
         if (artist.length() > 100) {
-            throw new IllegalArgumentException("Artist name is too long");
+            throw new BadRequestException("Artist name is too long");
         }
 
         artist = artist.replaceAll("[\n\r]", "_");

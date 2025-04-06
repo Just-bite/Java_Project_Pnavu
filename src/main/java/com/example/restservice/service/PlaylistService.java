@@ -1,5 +1,6 @@
 package com.example.restservice.service;
 
+import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.Song;
 import com.example.restservice.model.User;
@@ -25,13 +26,13 @@ public class PlaylistService {
 
     public Playlist getPlaylistById(Long id) {
         return playlistRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Playlist not found"));
+                .orElseThrow(() -> new NotFoundException("Playlist with id not found"));
 
     }
 
     public Playlist createPlaylist(Playlist playlist, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
         playlist.setUser(user);
         return playlistRepository.save(playlist);
     }
