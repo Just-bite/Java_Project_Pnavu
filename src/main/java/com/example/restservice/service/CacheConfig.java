@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CacheConfig<K, V> extends LinkedHashMap<K, V> {
-    private static final int MAXSIZE = 3;
+    public static final int MAXSIZE = 3;
 
     public CacheConfig() {
         super(MAXSIZE + 1, 1.f, true);
