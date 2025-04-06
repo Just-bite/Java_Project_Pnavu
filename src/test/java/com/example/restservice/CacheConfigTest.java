@@ -1,9 +1,11 @@
 package com.example.restservice;
 
-
 import com.example.restservice.service.CacheConfig;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CacheConfigTest {
 
@@ -50,12 +52,12 @@ class CacheConfigTest {
         cache2.put(1, "One");
         cache3.put(2, "Two");
 
-        assertEquals(cache1, cache1);      // рефлексивность
-        assertEquals(cache1, cache2);     // одинаковое содержимое
-        assertNotEquals(cache1, cache3);  // разное содержимое
-        assertNotEquals(null, cache1);    // сравнение с null
+        assertEquals(cache1, cache1);
+        assertEquals(cache1, cache2);
+        assertNotEquals(cache1, cache3);
+        assertNotEquals(null, cache1);
         Object notCache = new Object();
-        assertNotEquals(cache1, notCache); // сравнение с другим типом
+        assertNotEquals(cache1, notCache);
     }
 
     @Test
@@ -66,12 +68,11 @@ class CacheConfigTest {
         cache1.put(1, "One");
         cache2.put(1, "One");
 
-        // Проверка hashCode
         assertEquals(cache1.hashCode(), cache2.hashCode());
     }
 
     @Test
     void testMaxSizeConstant() {
-        assertEquals(3, CacheConfig.MAXSIZE, "Максимальный размер кэша должен быть 3");
+        assertEquals(3, CacheConfig.MAXSIZE, "Max Cache Size must be 3");
     }
 }

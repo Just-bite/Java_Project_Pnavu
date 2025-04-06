@@ -12,12 +12,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.*;
-import java.util.logging.Logger;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SongServiceTest {
@@ -31,15 +39,12 @@ class SongServiceTest {
     @Mock
     private LinkedHashMap<String, List<Song>> songsCache;
 
-    @Mock
-    private Logger logger;
 
     @InjectMocks
     private SongService songService;
 
     @Test
     void getAllSongs_ShouldReturnAllSongs() {
-        // Arrange
         List<Playlist> playlists = Collections.emptyList();
         List<Song> expectedSongs = Arrays.asList(
                 new Song(1L, "Song 1", "Artist 1",playlists),
@@ -47,44 +52,36 @@ class SongServiceTest {
         );
         when(songRepository.findAll()).thenReturn(expectedSongs);
 
-        // Act
         List<Song> result = songService.getAllSongs();
 
-        // Assert
         assertEquals(expectedSongs, result);
         verify(songRepository, times(1)).findAll();
     }
 
     @Test
     void getSongById_ShouldReturnSong_WhenExists() {
-        // Arrange
         Long songId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         Song expectedSong = new Song(songId, "Test Song", "Test Artist",playlists);
         when(songRepository.findById(songId)).thenReturn(Optional.of(expectedSong));
 
-        // Act
         Song result = songService.getSongById(songId);
 
-        // Assert
         assertEquals(expectedSong, result);
         verify(songRepository, times(1)).findById(songId);
     }
 
     @Test
     void getSongById_ShouldThrowException_WhenNotExists() {
-        // Arrange
         Long songId = 999L;
         when(songRepository.findById(songId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(RuntimeException.class, () -> songService.getSongById(songId));
         verify(songRepository, times(1)).findById(songId);
     }
 
     @Test
     void createSongs_ShouldReturnSavedSongs() {
-        // Arrange
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songsToSave = Arrays.asList(
                 new Song(null, "New Song 1", "New Artist",playlists),
@@ -96,17 +93,14 @@ class SongServiceTest {
         );
         when(songRepository.saveAll(songsToSave)).thenReturn(savedSongs);
 
-        // Act
         List<Song> result = songService.createSongs(songsToSave);
 
-        // Assert
         assertEquals(savedSongs, result);
         verify(songRepository, times(1)).saveAll(songsToSave);
     }
 
     @Test
     void updateSong_ShouldUpdateAndClearCache() {
-        // Arrange
         Long songId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         Song existingSong = new Song(songId, "Old Title", "Old Artist",playlists);
@@ -116,10 +110,9 @@ class SongServiceTest {
         when(songRepository.findById(songId)).thenReturn(Optional.of(existingSong));
         when(songRepository.save(existingSong)).thenReturn(expectedSong);
 
-        // Act
+
         Song result = songService.updateSong(songId, updatedSongData);
 
-        // Assert
         assertEquals(expectedSong, result);
         assertEquals("New Title", existingSong.getTitle());
         assertEquals("New Artist", existingSong.getArtist());
@@ -130,7 +123,6 @@ class SongServiceTest {
 
     @Test
     void deleteSong_ShouldRemoveFromPlaylistsAndClearCache() {
-        // Arrange
         Long songId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songsToDelete = Collections.emptyList();
@@ -143,10 +135,8 @@ class SongServiceTest {
         when(songRepository.findById(songId)).thenReturn(Optional.of(song));
         doNothing().when(songRepository).delete(song);
 
-        // Act
         songService.deleteSong(songId);
 
-        // Assert
         verify(songRepository, times(1)).findById(songId);
         verify(playlistRepository, times(1)).save(playlist1);
         verify(playlistRepository, times(1)).save(playlist2);
@@ -156,7 +146,6 @@ class SongServiceTest {
 
     @Test
     void getSongsByArtist_ShouldReturnFromCache_WhenAvailable() {
-        // Arrange
         String artist = "Cached Artist";
         List<Playlist> playlists = Collections.emptyList();
         List<Song> cachedSongs = Arrays.asList(
@@ -166,10 +155,8 @@ class SongServiceTest {
         when(songsCache.containsKey(artist)).thenReturn(true);
         when(songsCache.get(artist)).thenReturn(cachedSongs);
 
-        // Act
         List<Song> result = songService.getSongsByArtist(artist);
 
-        // Assert
         assertEquals(cachedSongs, result);
         verify(songsCache, times(1)).containsKey(artist);
         verify(songsCache, times(1)).get(artist);
@@ -178,7 +165,6 @@ class SongServiceTest {
 
     @Test
     void getSongsByArtist_ShouldQueryDBAndUpdateCache_WhenNotInCache() {
-        // Arrange
         String artist = "New Artist";
         List<Playlist> playlists = Collections.emptyList();
         List<Song> dbSongs = Arrays.asList(
@@ -188,10 +174,8 @@ class SongServiceTest {
         when(songsCache.containsKey(artist)).thenReturn(false);
         when(songRepository.findByArtist(artist)).thenReturn(dbSongs);
 
-        // Act
         List<Song> result = songService.getSongsByArtist(artist);
 
-        // Assert
         assertEquals(dbSongs, result);
         verify(songsCache, times(1)).containsKey(artist);
         verify(songRepository, times(1)).findByArtist(artist);
@@ -200,31 +184,26 @@ class SongServiceTest {
 
     @Test
     void getSongsByArtist_ShouldThrowException_WhenArtistIsNull() {
-        // Act & Assert
         assertThrows(BadRequestException.class, () -> songService.getSongsByArtist(null));
         verifyNoInteractions(songsCache, songRepository);
     }
 
     @Test
     void getSongsByArtist_ShouldThrowException_WhenArtistIsEmpty() {
-        // Act & Assert
         assertThrows(BadRequestException.class, () -> songService.getSongsByArtist(""));
         verifyNoInteractions(songsCache, songRepository);
     }
 
     @Test
     void getSongsByArtist_ShouldThrowException_WhenArtistTooLong() {
-        // Arrange
         String longArtist = "a".repeat(101);
 
-        // Act & Assert
         assertThrows(BadRequestException.class, () -> songService.getSongsByArtist(longArtist));
         verifyNoInteractions(songsCache, songRepository);
     }
 
     @Test
     void getSongsByArtist_ShouldSanitizeInput() {
-        // Arrange
         String artist = "Artist\nWith\rNewlines";
         String sanitizedArtist = "Artist_With_Newlines";
         List<Playlist> playlists = Collections.emptyList();
@@ -233,10 +212,8 @@ class SongServiceTest {
         when(songsCache.containsKey(sanitizedArtist)).thenReturn(false);
         when(songRepository.findByArtist(sanitizedArtist)).thenReturn(dbSongs);
 
-        // Act
         List<Song> result = songService.getSongsByArtist(artist);
 
-        // Assert
         assertEquals(dbSongs, result);
         verify(songRepository, times(1)).findByArtist(sanitizedArtist);
     }

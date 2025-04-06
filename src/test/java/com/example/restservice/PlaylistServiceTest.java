@@ -14,11 +14,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PlaylistServiceTest {
@@ -37,7 +47,6 @@ class PlaylistServiceTest {
 
     @Test
     void getAllPlaylists_ShouldReturnAllPlaylists() {
-        // Arrange
         List<Playlist> playlists = Collections.emptyList();
         User user = new User(1L,"test user",playlists);
         List<Song> songs = Collections.emptyList();
@@ -47,17 +56,14 @@ class PlaylistServiceTest {
         );
         when(playlistRepository.findAll()).thenReturn(expectedPlaylists);
 
-        // Act
         List<Playlist> result = playlistService.getAllPlaylists();
 
-        // Assert
         assertEquals(expectedPlaylists, result);
         verify(playlistRepository, times(1)).findAll();
     }
 
     @Test
     void getPlaylistById_ShouldReturnPlaylist_WhenExists() {
-        // Arrange
         Long playlistId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         User user = new User(1L,"test user",playlists);
@@ -65,28 +71,23 @@ class PlaylistServiceTest {
         Playlist expectedPlaylist = new Playlist(playlistId, "Test Playlist",user,songs);
         when(playlistRepository.findById(playlistId)).thenReturn(Optional.of(expectedPlaylist));
 
-        // Act
         Playlist result = playlistService.getPlaylistById(playlistId);
 
-        // Assert
         assertEquals(expectedPlaylist, result);
         verify(playlistRepository, times(1)).findById(playlistId);
     }
 
     @Test
     void getPlaylistById_ShouldThrowNotFoundException_WhenNotExists() {
-        // Arrange
         Long playlistId = 999L;
         when(playlistRepository.findById(playlistId)).thenReturn(Optional.empty());
 
-        // Act & Assert
         assertThrows(NotFoundException.class, () -> playlistService.getPlaylistById(playlistId));
         verify(playlistRepository, times(1)).findById(playlistId);
     }
 
     @Test
     void createPlaylist_ShouldCreateAndAssignToUser() {
-        // Arrange
         Long userId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songs = Collections.emptyList();
@@ -98,10 +99,8 @@ class PlaylistServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(playlistRepository.save(newPlaylist)).thenReturn(savedPlaylist);
 
-        // Act
         Playlist result = playlistService.createPlaylist(newPlaylist, userId);
 
-        // Assert
         assertNotNull(result.getId());
         assertEquals(user, result.getUser());
         verify(userRepository, times(1)).findById(userId);
@@ -110,7 +109,6 @@ class PlaylistServiceTest {
 
     @Test
     void createPlaylist_ShouldThrowNotFoundException_WhenUserNotExists() {
-        // Arrange
         Long userId = 999L;
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songs = Collections.emptyList();
@@ -118,8 +116,8 @@ class PlaylistServiceTest {
         Playlist newPlaylist = new Playlist(null, "New Playlist",user,songs);
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Act & Assert
-        assertThrows(NotFoundException.class, () -> playlistService.createPlaylist(newPlaylist, userId));
+        assertThrows(NotFoundException.class, () ->
+                     playlistService.createPlaylist(newPlaylist, userId));
         verify(userRepository, times(1)).findById(userId);
         verify(playlistRepository, never()).save(any());
     }
@@ -127,7 +125,6 @@ class PlaylistServiceTest {
     @Test
     @Transactional
     void addSongsToPlaylist_ShouldAddSongs() {
-        // Arrange
         Long playlistId = 1L;
         List<Long> songIds = Arrays.asList(1L, 2L);
         List<Playlist> playlists = Collections.emptyList();
@@ -143,10 +140,8 @@ class PlaylistServiceTest {
         when(songRepository.findAllById(songIds)).thenReturn(songs);
         when(playlistRepository.save(playlist)).thenReturn(playlist);
 
-        // Act
         Playlist result = playlistService.addSongsToPlaylist(playlistId, songIds);
 
-        // Assert
         assertEquals(songs, result.getSongs());
         verify(playlistRepository, times(1)).findById(playlistId);
         verify(songRepository, times(1)).findAllById(songIds);
@@ -156,7 +151,6 @@ class PlaylistServiceTest {
     @Test
     @Transactional
     void addSongsToPlaylist_ShouldClearExistingSongs() {
-        // Arrange
         Long playlistId = 1L;
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songsT = Collections.emptyList();
@@ -174,10 +168,8 @@ class PlaylistServiceTest {
         when(songRepository.findAllById(newSongIds)).thenReturn(newSongs);
         when(playlistRepository.save(playlist)).thenReturn(playlist);
 
-        // Act
         Playlist result = playlistService.addSongsToPlaylist(playlistId, newSongIds);
 
-        // Assert
         assertEquals(2, result.getSongs().size());
         assertTrue(result.getSongs().containsAll(newSongs));
     }
@@ -197,10 +189,8 @@ class PlaylistServiceTest {
         when(playlistRepository.findById(playlistId)).thenReturn(Optional.of(playlist));
         doNothing().when(playlistRepository).delete(playlist);
 
-        // Act
         playlistService.deletePlaylist(playlistId);
 
-        // Assert
         assertTrue(playlist.getSongs().isEmpty());
         verify(playlistRepository, times(1)).findById(playlistId);
         verify(playlistRepository, times(1)).delete(playlist);
@@ -208,7 +198,6 @@ class PlaylistServiceTest {
 
     @Test
     void getPlaylistsWithSongs_ShouldReturnPlaylistsWithSongs() {
-        // Arrange
         List<Playlist> playlists = Collections.emptyList();
         List<Song> songsT = Collections.emptyList();
         User user = new User(1L, "testUser",playlists);
@@ -220,10 +209,8 @@ class PlaylistServiceTest {
 
         when(playlistRepository.findPlaylistsWithSongs()).thenReturn(expectedPlaylists);
 
-        // Act
         List<Playlist> result = playlistService.getPlaylistsWithSongs();
 
-        // Assert
         assertEquals(expectedPlaylists, result);
         assertEquals(1, result.get(0).getSongs().size());
         verify(playlistRepository, times(1)).findPlaylistsWithSongs();

@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class SongService {
@@ -30,6 +32,16 @@ public class SongService {
     }
 
     public List<Song> createSongs(List<Song> songs) {
+        if (songs == null || songs.isEmpty()) {
+            throw new BadRequestException("Song list must not be empty");
+        }
+
+        songs.forEach(song -> {
+            if (song.getTitle() == null || song.getTitle().isBlank()) {
+                throw new BadRequestException("Song title must not be empty");
+            }
+        });
+
         return songRepository.saveAll(songs);
     }
 
