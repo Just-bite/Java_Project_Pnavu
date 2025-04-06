@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -93,6 +95,27 @@ class UserServiceTest {
         assertNotNull(result.getId());
         assertEquals(savedUser, result);
         verify(userRepository, times(1)).save(newUser);
+    }
+
+    @Test
+    void testCreateUsers() {
+        List<Playlist> playlists = Collections.emptyList();
+        List<User> newUsers = Arrays.asList(
+                new User(null,"user name 1",playlists),
+                new User(null, "newUser 2",playlists)
+        );
+        List<User> savedUsers = Arrays.asList(
+                new User(1L,"user name 1",playlists),
+                new User(2L, "newUser 2",playlists)
+        );
+
+        when(userRepository.saveAll(newUsers)).thenReturn(savedUsers);
+
+        List<User> result = userService.createUsers(newUsers);
+
+        assertEquals(2, result.size());
+        assertEquals(savedUsers, result);
+        verify(userRepository, times(1)).saveAll(newUsers);
     }
 
     @Test

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -97,6 +98,56 @@ class SongServiceTest {
 
         assertEquals(savedSongs, result);
         verify(songRepository, times(1)).saveAll(songsToSave);
+    }
+
+    @Test
+    void createSongs_ShouldThrowException_WhenListIsEmpty() {
+        List<Song> emptyList = Collections.emptyList();
+
+        assertThrows(BadRequestException.class, () -> {
+            songService.createSongs(emptyList);
+        });
+
+        verify(songRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void createSongs_ShouldThrowException_WhenListIsNull() {
+        assertThrows(BadRequestException.class, () -> {
+            songService.createSongs(null);
+        });
+
+        verify(songRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void createSongs_ShouldThrowException_WhenTitleIsBlank() {
+        List<Playlist> playlists = Collections.emptyList();
+        List<Song> invalidSongs = List.of(
+                new Song(null, "Valid Title", "Artist", playlists),
+                new Song(null, "", "Artist", playlists)
+        );
+
+        assertThrows(BadRequestException.class, () -> {
+            songService.createSongs(invalidSongs);
+        });
+
+        verify(songRepository, never()).saveAll(anyList());
+    }
+
+    @Test
+    void createSongs_ShouldThrowException_WhenTitleIsNull() {
+        List<Playlist> playlists = Collections.emptyList();
+        List<Song> invalidSongs = List.of(
+                new Song(null, "Valid Title", "Artist", playlists),
+                new Song(null, null, "Artist", playlists)
+        );
+
+        assertThrows(BadRequestException.class, () -> {
+            songService.createSongs(invalidSongs);
+        });
+
+        verify(songRepository, never()).saveAll(anyList());
     }
 
     @Test
