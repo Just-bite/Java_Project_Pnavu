@@ -65,14 +65,6 @@ public class LogController {
         return createFileResponse(tempLogFile);
     }
 
-    private ResponseEntity<UrlResource> createUrlResourceResponse(UrlResource resource) {
-        return ResponseEntity.ok()
-                .contentType(MediaType.TEXT_PLAIN)
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-    }
-
     private ResponseEntity<Resource> createFileResponse(File file) throws IOException {
         UrlResource resource = new UrlResource(file.toURI());
         return ResponseEntity.ok()
