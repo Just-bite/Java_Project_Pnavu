@@ -9,13 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+
 @Aspect
 @Component
 public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Before("execution(* com.example.restservice..*(..))")
+    @Before("execution(* com.example.restservice..*(..)) && !within(com.example.restservice.aspect.LoggingAspect)")
     public void logBefore(JoinPoint joinPoint) {
         if (logger.isInfoEnabled()) {
             logger.atInfo()
@@ -26,7 +27,8 @@ public class LoggingAspect {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* com.example.restservice..*(..))", returning = "result")
+    @AfterReturning(pointcut = "execution(* com.example.restservice..*(..)) && !within(com.example.restservice.aspect.LoggingAspect)",
+            returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         if (logger.isInfoEnabled()) {
             logger.atInfo()
@@ -37,7 +39,8 @@ public class LoggingAspect {
         }
     }
 
-    @AfterThrowing(pointcut = "execution(* com.example.restservice..*(..))", throwing = "error")
+    @AfterThrowing(pointcut = "execution(* com.example.restservice..*(..)) && !within(com.example.restservice.aspect.LoggingAspect)",
+            throwing = "error")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
         if (logger.isErrorEnabled()) {
             logger.atError()
