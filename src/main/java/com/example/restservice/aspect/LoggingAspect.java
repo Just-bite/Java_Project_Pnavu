@@ -30,9 +30,9 @@ public class LoggingAspect {
         }
     }
 
-    @AfterReturning(pointcut = "execution(* com.example.restservice..*(..)) && " +
-            "!within(com.example.restservice.aspect.LoggingAspect) && " +
-            "!within(com.example.restservice.aspect.RequestCountingAspect)",
+    @AfterReturning(pointcut = "execution(* com.example.restservice..*(..)) && "
+            + "!within(com.example.restservice.aspect.LoggingAspect) && "
+            + "!within(com.example.restservice.aspect.RequestCountingAspect)",
             returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         if (logger.isInfoEnabled()) {
@@ -44,9 +44,9 @@ public class LoggingAspect {
         }
     }
 
-    @AfterThrowing(pointcut = "execution(* com.example.restservice..*(..)) && " +
-            "!within(com.example.restservice.aspect.LoggingAspect) && " +
-            "!within(com.example.restservice.aspect.RequestCountingAspect)",
+    @AfterThrowing(pointcut = "execution(* com.example.restservice..*(..)) && "
+            + "!within(com.example.restservice.aspect.LoggingAspect) && "
+            + "!within(com.example.restservice.aspect.RequestCountingAspect)",
             throwing = "error")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable error) {
         if (logger.isErrorEnabled()) {

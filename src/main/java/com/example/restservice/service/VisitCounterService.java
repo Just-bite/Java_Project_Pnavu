@@ -1,8 +1,9 @@
 package com.example.restservice.service;
-import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import org.springframework.stereotype.Service;
 
 @Service
 public class VisitCounterService {
@@ -10,10 +11,6 @@ public class VisitCounterService {
 
     public void incrementCounter(String url) {
         urlCounterMap.computeIfAbsent(url, k -> new AtomicLong(0)).incrementAndGet();
-    }
-
-    public long getCount(String url) {
-        return urlCounterMap.getOrDefault(url, new AtomicLong(0)).get();
     }
 
     public Map<String, Long> getAllCounts() {

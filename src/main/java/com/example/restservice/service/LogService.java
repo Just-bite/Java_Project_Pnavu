@@ -1,9 +1,12 @@
 package com.example.restservice.service;
 
+import com.example.restservice.exception.FileProcessingException;
 import com.example.restservice.exception.NotFoundException;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,6 +21,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
 
 @Service
 public class LogService {
@@ -44,6 +49,9 @@ public class LogService {
 
             fileStorage.put(fileId, tempFile.toPath());
             fileStatus.put(fileId, "READY");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            fileStatus.put(fileId, "CANCELLED");
         } catch (Exception e) {
             fileStatus.put(fileId, "ERROR");
         }
@@ -54,16 +62,17 @@ public class LogService {
                 fileStatus.getOrDefault(fileId, "NOT_FOUND"));
     }
 
-    public CompletableFuture<UrlResource> getFileAsync(String fileId) { // Изменено на UrlResource
+    public CompletableFuture<UrlResource> getFileAsync(String fileId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 Path filePath = fileStorage.get(fileId);
                 if (filePath == null || !Files.exists(filePath)) {
-                    throw new NotFoundException("File not found");
+                    throw new NotFoundException("File not found for ID: " + fileId);
                 }
                 return new UrlResource(filePath.toUri());
             } catch (MalformedURLException e) {
-                throw new RuntimeException("Failed to read file", e);
+                throw new FileProcessingException("Failed to create URL resource for file: "
+                                                                                + fileId, e);
             }
         });
     }
@@ -146,7 +155,9 @@ public class LogService {
     }
 
     private String sanitizeFilename(String filename) {
-        if (filename == null) return "unknown";
+        if (filename == null) {
+            return "unknown";
+        }
         return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
     }
 }

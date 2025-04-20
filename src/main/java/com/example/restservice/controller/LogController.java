@@ -14,7 +14,12 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +29,8 @@ public class LogController {
     private final LogService logService;
 
     @PostMapping("/filter")
-    public CompletableFuture<ResponseEntity<Map<String, String>>> filterLogs(@RequestParam String date) {
+    public CompletableFuture<ResponseEntity<Map<String, String>>>
+                            filterLogs(@RequestParam String date) {
         return logService.createFilteredLogFileAsync(date)
                 .thenApply(fileId -> ResponseEntity.ok(Map.of(
                         "fileId", fileId,
