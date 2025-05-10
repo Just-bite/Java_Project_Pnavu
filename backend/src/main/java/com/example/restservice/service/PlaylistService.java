@@ -1,13 +1,13 @@
 package com.example.restservice.service;
 
 import com.example.restservice.exception.NotFoundException;
-import com.example.restservice.model.Playlist;
-import com.example.restservice.model.Song;
-import com.example.restservice.model.User;
+import com.example.restservice.model.*;
 import com.example.restservice.repository.PlaylistRepository;
 import com.example.restservice.repository.SongRepository;
 import com.example.restservice.repository.UserRepository;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +20,10 @@ public class PlaylistService {
     private final SongRepository songRepository;
     private final UserRepository userRepository;
 
-    public List<Playlist> getAllPlaylists() {
-        return playlistRepository.findAll();
+    public List<PlaylistDto> getAllPlaylists() {
+        return playlistRepository.findAll().stream()
+                .map(PlaylistDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public Playlist getPlaylistById(Long id) {
@@ -30,11 +32,12 @@ public class PlaylistService {
 
     }
 
-    public Playlist createPlaylist(Playlist playlist, Long userId) {
+    public PlaylistDto createPlaylist(Playlist playlist, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         playlist.setUser(user);
-        return playlistRepository.save(playlist);
+        Playlist savedPlaylist = playlistRepository.save(playlist);
+        return PlaylistDto.fromEntity(savedPlaylist);
     }
 
     @Transactional
@@ -49,6 +52,32 @@ public class PlaylistService {
         Playlist playlist = getPlaylistById(playlistId);
         playlist.getSongs().clear();
         playlistRepository.delete(playlist);
+    }
+
+    @Transactional
+    public Playlist updatePlaylist(Long playlistId, PlaylistUpdateRequest request) {
+        // 1. Находим плейлист
+        Playlist playlist = playlistRepository.findById(playlistId)
+                .orElseThrow(() -> new NotFoundException("Playlist not found"));
+
+        // 2. Обновляем название (если передано)
+        if (request.getName() != null) {
+            playlist.setName(request.getName());
+        }
+
+        // 3. Обновляем песни (если переданы)
+        if (request.getSongIds() != null) {
+            // Получаем все песни разом
+            List<Song> songs = songRepository.findAllById(request.getSongIds());
+
+            // Очищаем текущие песни
+            playlist.getSongs().clear();
+
+            // Добавляем новые
+            playlist.getSongs().addAll(songs);
+        }
+
+        return playlistRepository.save(playlist);
     }
 
     public List<Playlist> getPlaylistsWithSongs() {

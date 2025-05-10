@@ -1,14 +1,18 @@
 package com.example.restservice.service;
 
 import com.example.restservice.exception.BadRequestException;
+import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.Song;
+import com.example.restservice.model.SongDto;
 import com.example.restservice.repository.PlaylistRepository;
 import com.example.restservice.repository.SongRepository;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +26,10 @@ public class SongService {
     private final PlaylistRepository playlistRepository;
     private final LinkedHashMap<String, List<Song>> songsCache;
 
-    public List<Song> getAllSongs() {
-        return songRepository.findAll();
+    public List<SongDto> getAllSongs() {
+        return songRepository.findAll().stream()
+                .map(SongDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public Song getSongById(Long id) {
@@ -45,18 +51,18 @@ public class SongService {
         return songRepository.saveAll(songs);
     }
 
-    public Song updateSong(Long id, Song song) {
-        Song existingSong = getSongById(id);
-        String oldArtist = existingSong.getArtist();
+    public Song updateSong(Long id, Song songDetails) {
+        Song existingSong = songRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Song not found with id: " + id));
 
-        existingSong.setTitle(song.getTitle());
-        existingSong.setArtist(song.getArtist());
+        existingSong.setTitle(songDetails.getTitle());
+        existingSong.setArtist(songDetails.getArtist());
+
         Song updatedSong = songRepository.save(existingSong);
 
-
-        songsCache.remove(oldArtist);
+        songsCache.remove(existingSong.getArtist());
         logger.log(Level.INFO, "[CACHE] Removed outdated cache for artist: {0}",
-                                                            existingSong.getArtist());
+                existingSong.getArtist());
 
         return updatedSong;
     }

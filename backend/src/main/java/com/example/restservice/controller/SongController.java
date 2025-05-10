@@ -4,6 +4,7 @@ import com.example.restservice.exception.BadRequestException;
 import com.example.restservice.exception.CustomExceptionHandler;
 import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Song;
+import com.example.restservice.model.SongDto;
 import com.example.restservice.service.SongService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,8 +35,8 @@ public class SongController {
             summary = "Get all songs",
             description = "Retrieves all stored songs"
     )
-    public List<Song> getAllSongs() {
-        List<Song> songs = songService.getAllSongs();
+    public List<SongDto> getAllSongs() {
+        List<SongDto> songs = songService.getAllSongs();
         if (songs.isEmpty()) {
             throw new NotFoundException("The song list is empty");
         }

@@ -39,7 +39,6 @@ public class Playlist {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     @Schema(description = "User entity", accessMode = Schema.AccessMode.READ_ONLY)
     private User user;
 

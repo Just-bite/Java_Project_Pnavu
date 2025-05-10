@@ -4,6 +4,8 @@ import com.example.restservice.exception.BadRequestException;
 import com.example.restservice.exception.CustomExceptionHandler;
 import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Playlist;
+import com.example.restservice.model.PlaylistDto;
+import com.example.restservice.model.PlaylistUpdateRequest;
 import com.example.restservice.service.PlaylistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,13 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/playlists")
@@ -34,12 +30,21 @@ public class PlaylistController {
             summary = "Get all playlists",
             description = "Retrieves all playlists and information about the songs they contain"
     )
-    public List<Playlist> getAllPlaylists() {
-        List<Playlist> playlists = playlistService.getAllPlaylists();
+    public List<PlaylistDto> getAllPlaylists() {
+        List<PlaylistDto> playlists = playlistService.getAllPlaylists();
         if (playlists.isEmpty()) {
             throw new NotFoundException("The playlist list is empty");
         }
         return playlists;
+    }
+
+    @PutMapping("/u/{id}")
+    @Operation(summary = "Update playlist")
+    public Playlist updatePlaylist(
+            @PathVariable Long id,
+            @RequestBody PlaylistUpdateRequest request) {
+
+        return playlistService.updatePlaylist(id, request);
     }
 
     @GetMapping("/{id}")
@@ -59,8 +64,8 @@ public class PlaylistController {
             summary = "Create a playlist",
             description = "Creates an empty playlist for the user with the provided id"
     )
-    public Playlist createPlaylist(@Valid @RequestBody Playlist playlist,
-                                   @NotNull @PathVariable Long userId) {
+    public PlaylistDto createPlaylist(@RequestBody Playlist playlist,
+                                   @PathVariable Long userId) {
         if (playlist == null) {
             throw new BadRequestException("Playlist cannot be null");
         }
@@ -112,4 +117,5 @@ public class PlaylistController {
         }
         return playlists;
     }
+
 }

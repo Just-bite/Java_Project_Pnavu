@@ -3,6 +3,7 @@ package com.example.restservice;
 import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.User;
+import com.example.restservice.model.UserDto;
 import com.example.restservice.repository.PlaylistRepository;
 import com.example.restservice.repository.UserRepository;
 import com.example.restservice.service.UserService;
@@ -75,7 +76,7 @@ class UserServiceTest {
 
         when(userRepository.findAll()).thenReturn(expectedUsers);
 
-        List<User> result = userService.getAllUsers();
+        List<UserDto> result = userService.getAllUsers();
 
         assertEquals(1, result.size());
         assertEquals(expectedUsers, result);

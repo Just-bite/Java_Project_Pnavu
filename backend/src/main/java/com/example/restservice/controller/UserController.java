@@ -4,18 +4,14 @@ import com.example.restservice.exception.BadRequestException;
 import com.example.restservice.exception.CustomExceptionHandler;
 import com.example.restservice.exception.NotFoundException;
 import com.example.restservice.model.User;
+import com.example.restservice.model.UserDto;
+import com.example.restservice.model.UserUpdateRequest;
 import com.example.restservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -31,12 +27,12 @@ public class UserController {
             summary = "Get all users",
             description = "Retrieves all users and their information"
     )
-    public List<User> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public List<UserDto> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
         if (users.isEmpty()) {
             throw new NotFoundException("The user list is empty");
         }
-        return userService.getAllUsers();
+        return users;
     }
 
     @GetMapping("/{id}")
@@ -61,6 +57,15 @@ public class UserController {
             throw new BadRequestException("The user list cannot be empty");
         }
         return userService.createUsers(users);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user")
+    public void updateUser(
+            @PathVariable long id,
+            @RequestBody UserUpdateRequest updateRequest) {
+
+        userService.updateUser(id, updateRequest);
     }
 
     @DeleteMapping("/{id}")

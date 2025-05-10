@@ -3,6 +3,7 @@ package com.example.restservice;
 import com.example.restservice.exception.BadRequestException;
 import com.example.restservice.model.Playlist;
 import com.example.restservice.model.Song;
+import com.example.restservice.model.SongDto;
 import com.example.restservice.model.User;
 import com.example.restservice.repository.PlaylistRepository;
 import com.example.restservice.repository.SongRepository;
@@ -53,7 +54,7 @@ class SongServiceTest {
         );
         when(songRepository.findAll()).thenReturn(expectedSongs);
 
-        List<Song> result = songService.getAllSongs();
+        List<SongDto> result = songService.getAllSongs();
 
         assertEquals(expectedSongs, result);
         verify(songRepository, times(1)).findAll();
