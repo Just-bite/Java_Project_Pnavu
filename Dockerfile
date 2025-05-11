@@ -13,4 +13,4 @@ COPY --from=builder /app/target/RestService-*.jar app.jar
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "java -jar app.jar "]
+ENTRYPOINT ["java", "-jar", "app.jar"]
