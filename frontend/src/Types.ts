@@ -24,10 +24,5 @@ export interface Song {
     artist: string;
     playlistNames?: string[];
     playlists?: Playlist[];
-    userNames: string[]; // Новое поле для имен пользователей
-}
-
-export interface UserUpdateData {
-    username?: string;
-    playlists?: Playlist[];
+    userNames: string[];
 }

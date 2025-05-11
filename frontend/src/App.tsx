@@ -268,7 +268,7 @@ const AppLayout: React.FC = () => {
             }}>
                 <Space size="large">
                     <Link to="/">
-                        <Button type="text" icon={<HomeOutlined style={{ color: 'white', fontSize: '20px' }} />} />
+
                     </Link>
                 </Space>
 

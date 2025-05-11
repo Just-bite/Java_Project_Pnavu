@@ -15,6 +15,6 @@ jobs:
 
       - name: Trigger Render deploy
         run: |
-          echo "📤 Отправка запроса на Render..."
+          echo " Отправка запроса на Render..."
           curl -X POST "https://api.render.com/deploy/srv-d0g81ms9c44c73fbmtag?key=hRoqq2O5nm8"
-          echo "✅ Render начал деплой."
+          echo " Render начал деплой."
