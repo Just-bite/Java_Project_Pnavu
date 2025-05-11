@@ -1,4 +1,3 @@
-# Этап сборки
 FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 
 WORKDIR /app
@@ -13,8 +12,8 @@ WORKDIR /app
 COPY --from=builder /app/target/RestService-*.jar app.jar
 
 ENV PORT=10000
-EXPOSE $PORT
+EXPOSE 10000
 HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -qO- http://localhost:$PORT/actuator/health || exit 1
+  CMD wget -qO- http://localhost:10000/actuator/health || exit 1
 
-CMD ["java", "-jar", "app.jar", "--server.port=${PORT}"]
+CMD ["java", "-jar", "app.jar", "-Dserver.port=${PORT}"]
