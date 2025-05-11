@@ -38,5 +38,6 @@ build/
 
 application.properties
 .env
+*.env
 *.keystore
 *.jks
