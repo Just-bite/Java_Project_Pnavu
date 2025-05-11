@@ -15,6 +15,6 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=builder /app/target/RestService-*.jar app.jar
 
-ENV PORT=8080
+ENV PORT=10000
 EXPOSE $PORT
 CMD ["java", "-jar", "app.jar", "--server.port=${PORT}"]
