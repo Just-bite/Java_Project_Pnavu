@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",      // Локальный фронтенд
-                        "https://your-frontend.onrender.com"  // Продакшен-фронтенд
+                        "https://java-project-pnavu-1.onrender.com"  // Продакшен-фронтенд
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
